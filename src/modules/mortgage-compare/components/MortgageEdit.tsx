@@ -6,10 +6,6 @@ import { mortgageListData, updateMortgage } from "../lib/mortgageListStore";
 import TextField from "@/components/fields/TextField";
 import type { Accessor } from "solid-js";
 
-const EditRow: ParentComponent = ({ children }) => (
-  <div class="p-1 mb-2 ">{children}</div>
-);
-
 const MortgageEdit: VoidComponent<{
   index: Accessor<number>;
 }> = ({ index }) => {
@@ -25,49 +21,49 @@ const MortgageEdit: VoidComponent<{
       updateMortgage(index(), (m) => (m[field] = v));
     };
   return (
-    <div>
-      <EditRow>
+    <div class="flex flex-col gap-2">
+      <div>
         <TextField
           label="Name"
           value={field("name")}
           onChange={fieldUpdate("name")}
         />
-      </EditRow>
-      <EditRow>
+      </div>
+      <div>
         <NumberField
           label="Principal"
           value={field("principal")}
           onChange={fieldUpdate("principal")}
         />
-      </EditRow>
-      <EditRow>
+      </div>
+      <div>
         <NumberField
           label="Interest (Yearly, 1 is 1%)"
           value={field("yearlyInterest")}
           onChange={fieldUpdate("yearlyInterest")}
         />
-      </EditRow>
-      <EditRow>
+      </div>
+      <div>
         <NumberField
           label="Periods (Months)"
           value={field("periodMonths")}
           onChange={fieldUpdate("periodMonths")}
         />
-      </EditRow>
-      <EditRow>
+      </div>
+      <div>
         <NumberField
           label="Extra Payment (Monthly)"
           value={field("extraMonthlyPayment")}
           onChange={fieldUpdate("extraMonthlyPayment")}
         />
-      </EditRow>
-      <EditRow>
+      </div>
+      <div>
         <NumberField
           label="Extra Initial (Use negative for cost)"
           value={field("extraInitialPayment")}
           onChange={fieldUpdate("extraInitialPayment")}
         />
-      </EditRow>
+      </div>
     </div>
   );
 };

@@ -1,13 +1,15 @@
 import type { ParentComponent } from "solid-js";
 
-const TD: ParentComponent<{ class?: string; section?: boolean }> = ({
+const TD: ParentComponent<{ class?: string; section?: "left" | "right" }> = ({
   children,
   section,
   ...props
 }) => (
   <td
     class={`px-1 text-right ${
-      section ? "border-l border-neutral-300 border-solid" : ""
+      section ? " border-neutral-300 border-solid" : ""
+    } ${
+      section === "left" ? "border-l" : section === "right" ? "border-r" : ""
     } ${props.class}`}
   >
     {children}

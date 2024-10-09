@@ -8,9 +8,9 @@ const NumberField: VoidComponent<{
 }> = ({ label, value, onChange }) => {
   return (
     <label class="flex flex-col">
-      <span class="text-xs">{label}</span>
+      <span class="text-xs mb-1">{label}</span>
       <input
-        class="rounded border border-neutral-300 border-solid p-1"
+        class="rounded border border-neutral-300 border-solid px-2 p-1 h-8"
         type="number"
         value={value()}
         onChange={(e) => onChange(e.target.valueAsNumber)}

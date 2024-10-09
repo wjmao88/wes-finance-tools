@@ -1,11 +1,8 @@
-import { For } from "solid-js";
-import MortgageControls from "./components/MortgageControls";
-import MortgageEdit from "./components/MortgageEdit";
-import { mortgageListData, type MortgageBase } from "./lib/mortgageListStore";
-import MortgageGlobalSummary from "./components/MortgageGlobalSummary";
 import { createAutoAnimate } from "@formkit/auto-animate/solid";
-import Card from "@/components/Card/Card";
-import MortgageTable from "./components/MortgageTable";
+import { For } from "solid-js";
+import MortgageGlobalSummary from "./components/MortgageGlobalSummary";
+import MortgagePanel from "./components/MortgagePanel";
+import { mortgageListData, type MortgageBase } from "./lib/mortgageListStore";
 
 export type MortgageCompareProps = {
   data: MortgageBase[] | null;
@@ -20,16 +17,7 @@ export default function MortgageCompare() {
 
       <div class="flex gap-4 mt-3" ref={parent}>
         <For each={mortgageListData.baseList}>
-          {(_mortgage, index) => (
-            <Card>
-              <div class="flex flex-col align-center gap-2">
-                <MortgageControls index={index} />
-                <MortgageEdit index={index} />
-                <hr class="my-5" />
-                <MortgageTable index={index} />
-              </div>
-            </Card>
-          )}
+          {(_mortgage, index) => <MortgagePanel index={index} />}
         </For>
       </div>
     </div>

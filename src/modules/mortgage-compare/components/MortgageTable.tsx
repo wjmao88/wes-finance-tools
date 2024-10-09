@@ -1,14 +1,12 @@
-import {
-  type Accessor,
-  type Component,
-  For,
-  type ParentComponent,
-} from "solid-js";
-import type { CustomPartial } from "solid-js/store/types/store.js";
-import MortgageEdit from "./MortgageEdit";
-import { mortgageListData } from "../lib/mortgageListStore";
-import TD from "@/components/table/TD";
+import { type Accessor, type Component, For } from "solid-js";
 import { calcTable, mergeMortgageRows } from "../lib/mortgageTable";
+import {
+  mortgageTableColumns,
+  mortgageTableGrouping,
+} from "../lib/mortgageTableConfig";
+import MortgageTD from "./MorgageTD";
+import MortgageTableHead from "./MortgageTableHead";
+import TD from "@/components/table/TD";
 
 export type MortgageTableRow = {
   period: number;
@@ -27,9 +25,10 @@ const MortgageTable: Component<{
 }> = ({ index }) => {
   const monthly = () => calcTable(index);
 
-  const yearlyTable = () => {
+  const groupedTable = () => {
+    const grouping = mortgageTableGrouping();
     return monthly().reduce<MortgageTableRow[]>((acc, month) => {
-      const year = Math.floor(month.period / 12) + 1;
+      const year = Math.floor(month.period / grouping) + 1;
       if (acc[year]) {
         acc[year] = mergeMortgageRows(month.period, acc[year], month);
       } else {
@@ -39,47 +38,52 @@ const MortgageTable: Component<{
     }, []);
   };
 
-  console.log("???", yearlyTable().length);
-
   return (
-    <div class="rounded border border-neutral-300 border-solid p-2">
-      <table>
-        <thead>
-          <tr>
-            <th></th>
-            <th colspan={4}>mortgage</th>
-            <th colspan={3}>investment</th>
-            <th></th>
-          </tr>
-          <tr>
-            <th>period</th>
-            <th>interest</th>
-            <th>principal</th>
-            <th>remaining</th>
-            <th>interest</th>
-            <th>new</th>
-            <th>total</th>
-            <th>balance</th>
-            {/* <th>diff</th> */}
-          </tr>
-        </thead>
-        <tbody>
-          <For each={yearlyTable()}>
-            {(row, rowIndex) => {
-              console.log(row);
-              // const compareBalance =
-              //   row.balance - baseTable()[rowIndex()].balance;
-              return (
-                <tr>
-                  <TD>{row.period + 1}</TD>
-                  <TD section>${row.interestPayment.toFixed(2)}</TD>
-                  <TD>${row.principalPayment.toFixed(2)}</TD>
-                  <TD>${row.principalRemaining.toFixed(2)}</TD>
-                  <TD section>${row.investmentInterest.toFixed(2)}</TD>
-                  <TD>${row.newInvestment.toFixed(2)}</TD>
-                  <TD>${row.investmentTotal.toFixed(2)}</TD>
-                  <TD section>${row.balance.toFixed(2)}</TD>
-                  {/* <TD
+    <table>
+      <MortgageTableHead />
+      <tbody>
+        <For each={groupedTable()}>
+          {(row, rowIndex) => {
+            console.log(row);
+            // const compareBalance =
+            //   row.balance - baseTable()[rowIndex()].balance;
+            return (
+              <tr>
+                {mortgageTableColumns.period && <TD>{row.period + 1}</TD>}
+                {mortgageTableColumns.mortgageInterest && (
+                  <MortgageTD category="mortgage" value={row.interestPayment} />
+                )}
+                {mortgageTableColumns.mortgagePrincipal && (
+                  <MortgageTD
+                    category="mortgage"
+                    value={row.principalPayment}
+                  />
+                )}
+                {mortgageTableColumns.mortgageRemaining && (
+                  <MortgageTD
+                    category="mortgage"
+                    value={row.principalRemaining}
+                  />
+                )}
+                {mortgageTableColumns.investmentInterest && (
+                  <MortgageTD
+                    category="investment"
+                    value={row.investmentInterest}
+                  />
+                )}
+                {mortgageTableColumns.investmentNew && (
+                  <MortgageTD category="investment" value={row.newInvestment} />
+                )}
+                {mortgageTableColumns.investmentTotal && (
+                  <MortgageTD
+                    category="investment"
+                    value={row.investmentTotal}
+                  />
+                )}
+                {mortgageTableColumns.balance && (
+                  <MortgageTD category="total" value={row.balance} />
+                )}
+                {/* <TD
                     class={
                       compareBalance > 0
                         ? "bg-green-300"
@@ -90,13 +94,12 @@ const MortgageTable: Component<{
                   >
                     {compareBalance !== 0 && ` $${compareBalance.toFixed(2)}`}
                   </TD> */}
-                </tr>
-              );
-            }}
-          </For>
-        </tbody>
-      </table>
-    </div>
+              </tr>
+            );
+          }}
+        </For>
+      </tbody>
+    </table>
   );
 };
 
